@@ -1,15 +1,5 @@
 {
-  "buildCommand": "pnpm install && pnpm --filter @workspace/wallet build",
-  "outputDirectory": "artifacts/wallet/dist",
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "framework": null,
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "buildCommand": "pnpm install && pnpm build",
+  "outputDirectory": "dist",
+  "rootDirectory": "artifacts/wallet"
 }
