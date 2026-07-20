@@ -1,0 +1,39 @@
+## Emberchain Monetary Policy (Concept)
+
+### Progressive Halving Schedule
+
+Instead of using Bitcoin's fixed four-year halving cycle, Emberchain uses a progressive halving schedule that reduces inflation quickly during the network's early growth while slowing the rate of change as the blockchain matures.
+
+Example schedule:
+
+* Launch: Initial block reward
+* 3 months after genesis: First halving
+* 6 months later: Second halving
+* 12 months later: Third halving
+* Every 24 months thereafter: Future halvings occur every two years
+
+This approach rewards early miners while transitioning the network toward long-term sustainability without abrupt changes every four years.
+
+---
+
+### Elastic Burn Mechanism
+
+Every block has two economic values:
+
+* **Block Reward** – New EMBR created for the miner.
+* **Transaction Burn** – A portion of transaction fees permanently removed from circulation.
+
+Unlike fixed burn models, Emberchain dynamically adjusts the protocol's base burn rate according to overall network activity.
+
+The objective is **not** to force every block to burn exactly as much EMBR as it creates. Instead, the protocol continuously adjusts the burn rate so that, over longer periods of time (weeks or months), the **total EMBR burned trends toward matching the total EMBR issued**.
+
+This creates a self-balancing monetary policy:
+
+* During periods of low network activity, issuance naturally exceeds burning to encourage growth and reward miners.
+* As transaction volume and adoption increase, the burn rate gradually increases.
+* On a mature, highly active network, total EMBR burned will tend to closely match total EMBR created, resulting in approximately net-zero issuance over time.
+* Depending on network conditions, the blockchain may become temporarily inflationary or temporarily deflationary, but the long-term goal is to remain near economic equilibrium rather than continuously inflating or continuously reducing the supply.
+
+The protocol should continuously monitor metrics such as transaction volume, active addresses, fee revenue, and overall network activity to determine appropriate adjustments to the burn rate.
+
+The goal is to create a blockchain whose monetary policy naturally adapts to the health and growth of the ecosystem instead of relying on a permanently fixed emission schedule.

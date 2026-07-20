@@ -1,0 +1,34 @@
+MetaMask encountered an error
+Your information can’t be shown. Don’t worry, your wallet and funds are safe.
+
+Error message
+
+Message: No XChain Swaps native asset found for chainId: eip155:7773
+
+Code: Error
+
+Stack:
+
+Error: No XChain Swaps native asset found for chainId: eip155:7773
+  at s.getNativeAssetForChainId (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-0.js:5:79096)
+  at m (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/ui-4.js:72:8380)
+  at h (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/ui-4.js:72:8763)
+  at f (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/ui-13.js:1:294018)
+  at sa (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:169002)
+  at Qs (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:220902)
+  at Al (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:208246)
+  at Rl (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:208174)
+  at Ol (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:208037)
+  at wl (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:205034)
+  at chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:154930
+  at n.unstable_runWithPriority (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:233312)
+  at Go (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:154708)
+  at Jo (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:154876)
+  at Qo (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:154811)
+  at zl (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:214073)
+  at n.unstable_runWithPriority (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:233312)
+  at Go (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:154708)
+  at Il (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:213359)
+  at chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:213271
+  at L (chrome-extension://ejbalbakoplchlghecdalmeeeajnimhm/common-10.js:1:232372)
+  at _.port1.onmessage (chrome-extension://ejbalbakoplchlghecda

@@ -1,0 +1,139 @@
+Subject: New Coin Listing Request — EMBR (Emberchain) — Browser Mining + Integrated Pool
+
+Hi Mining Scan team,
+
+I'd like to submit Emberchain (EMBR) for listing on your directory.
+
+EMBR is a live, actively mined proof-of-work coin with a fully integrated browser mining pool built directly into the wallet. No separate mining software, no pool setup — users open the wallet and start mining.
+
+Here are the full technical details:
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COIN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name:             Emberchain
+Ticker:           EMBR
+Chain ID:         7773
+Algorithm:        Keccak256 (browser-native, no GPU driver required)
+Block Reward:     5 EMBR
+Block Target:     8 seconds
+Difficulty:       Per-block retargeting, ±25% clamp per adjustment
+Consensus:        Proof-of-Work (browser mining)
+EVM Compatible:   Yes — full EVM via @ethereumjs/evm (smart contract support)
+Privacy Layer:    Yes — stealth addresses, ring signatures (up to 4 decoys),
+                  Pedersen commitments for shielded amounts
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+POOL & MINING ARCHITECTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EMBR does not use traditional pool software (no Stratum server, no miner binary).
+
+Mining is integrated directly into the EMBR web wallet. When a user opens the wallet and activates mining:
+
+  • One Web Worker is spawned per logical CPU core on the device
+  • Each worker receives an independent nonce range from the server
+  • Workers hash concurrently (Keccak256) until a valid share is found
+  • The best share is submitted to the pool endpoint (POST /mining/share) over JSON
+  • Stale templates (from a new block being found) are detected via 409 response
+    and the worker automatically fetches a fresh template and retries
+
+This means every EMBR wallet IS a pool client out of the box.
+
+Payout model:
+
+  • Proportional share-based — reward is split among all active miners
+    at block close, weighted by the number of valid shares each miner submitted
+  • No minimum payout threshold required
+  • Payouts happen automatically at block close (~every 8 seconds)
+
+This is a PvP-style competition: miners race each other every block round.
+Submit more shares, earn a larger cut.
+
+A live leaderboard showing miner rankings and real-time share counts
+per active block round is in active development.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SMART CONTRACT SUPPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Emberchain runs a full EVM — any Solidity contract that runs on Ethereum
+can be deployed on EMBR. The chain is EVM-compatible at the execution layer,
+including CREATE and CALL opcode support, contract state, and gas metering.
+
+Chain ID 7773 distinguishes EMBR transactions from mainnet and other EVM chains.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PRIVACY FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EMBR includes a native shielded transaction layer:
+
+  • Stealth addresses — receiver's real address is never published on-chain
+  • Ring signatures — sender is hidden among up to 4 decoy inputs,
+    making transaction source indeterminate
+  • Pedersen commitments — transaction amounts are cryptographically
+    blinded; only the sender and receiver know the value
+
+Users can choose to transact privately at any time, with no separate
+wallet software or bridge required.
+
+A public/shielded address toggle is built into the wallet UI,
+giving users control over exactly what information is visible on-chain.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COMMUNITY & ECOSYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The EMBR wallet includes a fully integrated community layer called the Forge:
+
+  • Real-time WebSocket chat (80-message history replay on connect)
+  • Threaded forum with wallet-address-based voting (one vote per address)
+  • Identity system with optional nickname, Anon#### fallback,
+    and address shielding — no email or sign-up required
+
+The Forge makes the wallet the social hub of the ecosystem, not a
+third-party Discord or Telegram.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROADMAP HIGHLIGHTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • Live mining leaderboard (PvP round rankings, in development)
+  • Onchain Savings — lock EMBR and earn yield, fully non-custodial
+  • Progressive halving — gradual continuous reward reduction,
+    no sudden cliff events
+  • Elastic issuance — block reward adjusts dynamically with network
+    activity to maintain target emission rate
+  • BIP-39 seed phrase export for MetaMask and hardware wallet compatibility
+  • Wallet PIN protection
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LINKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Wallet & Explorer:   [deployment URL]
+Bitcointalk ANN:     [ANN thread URL]
+Source:              Replit Workspace (available on request)
+
+Pool endpoint:       [deployment URL]/api/mining/
+Template:            GET  /api/mining/template
+Share submission:    POST /api/mining/share
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Happy to provide any additional information, screenshots, or API documentation
+you need for the listing.
+
+Thank you for your time.
+
+— The Emberchain Team

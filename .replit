@@ -1,0 +1,39 @@
+modules = ["nodejs-24", "postgresql-16", "python-base-3.13"]
+
+[deployment]
+router = "application"
+deploymentTarget = "gce"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+BASE_MAINNET_RPC = "https://mainnet.base.org"
+EMBR_RPC = "http://localhost:8080/api/rpc"
+RELAYER_ADDRESS = "0x9954146017aCE1994BC076243Ed49EC28C64D77B"
+UNISWAP_V2_ROUTER_BASE_MAINNET = "0x4752ba5dbc23f44d87826276bf6fd6b1c372ad24"
+BASE_RPC_URL = "https://mainnet.base.org"
+EMBERCHAIN_BRIDGE_ADDRESS = "0x1573EdF8F933601e6f37AC9B104cF62C7f85a0F4"
+VITE_BASE_CHAIN_ID = "8453"
+VITE_EMBERCHAIN_BRIDGE_ADDRESS = "0x1573EdF8F933601e6f37AC9B104cF62C7f85a0F4"
+VITE_EMBERSWAP_ADDRESS = "0x4e8821099cC706d9C4e6E7C05923C2950E361459"
+VITE_WEMBR_ADDRESS = "0x9362587019Ea0e4ef90fbd981c615d4441D9D2c4"
+VITE_EMBER_BRIDGE_ADDRESS = "0x9362587019ea0e4ef90fbd981c615d4441d9d2c4"
+EMBER_BRIDGE_ADDRESS = "0x9362587019ea0e4ef90fbd981c615d4441d9d2c4"

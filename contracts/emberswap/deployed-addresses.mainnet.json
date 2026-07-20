@@ -1,0 +1,12 @@
+{
+  "network": "base-mainnet",
+  "chainId": 8453,
+  "deployedAt": "2026-07-18T17:27:33.212Z",
+  "deployer": "0x9954146017aCE1994BC076243Ed49EC28C64D77B",
+  "relayer": "0x9954146017aCE1994BC076243Ed49EC28C64D77B",
+  "contracts": {
+    "WrappedEMBR": "0x9362587019Ea0e4ef90fbd981c615d4441D9D2c4",
+    "EmberchainBridge": "0x1573EdF8F933601e6f37AC9B104cF62C7f85a0F4",
+    "EmberSwap": "0x4e8821099cC706d9C4e6E7C05923C2950E361459"
+  }
+}

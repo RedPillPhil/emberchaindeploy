@@ -1,0 +1,314 @@
+#!/usr/bin/env python3
+"""
+🔥 EMBERCHAIN Keccak256 Custom Header PoW Miner 🔥
+
+Chain ID: 7773
+Algorithm: Keccak256 Custom Header PoW
+Block Time: 8 seconds
+Wallet: configured below
+"""
+
+import json
+import time
+import random
+import requests
+import os
+
+from Crypto.Hash import keccak
+from multiprocessing import Process
+
+
+# ============================
+# EMBERCHAIN CONFIG
+# ============================
+
+NODE = "https://emberchain.org"
+
+WALLET = "0xa8f6efc25896c24ac6c9441f9f693c14517aa818"
+
+CHAIN_ID = 7773
+
+
+# Mining intensity
+# 4  = light
+# 8  = decent
+# 16 = maximum for Ryzen 7 9800X3D
+WORKERS = 8
+
+
+
+# ============================
+# KECCAK256
+# ============================
+
+def keccak256(data: bytes) -> int:
+
+    k = keccak.new(
+        digest_bits=256
+    )
+
+    k.update(data)
+
+    return int.from_bytes(
+        k.digest(),
+        "big"
+    )
+
+
+
+# ============================
+# HEADER ENCODING
+# ============================
+
+def encode(header, nonce):
+
+    payload = {
+        **header,
+        "nonce": str(nonce)
+    }
+
+    return json.dumps(
+        payload,
+        separators=(",", ":")
+    ).encode()
+
+
+
+# ============================
+# MINING WORKER
+# ============================
+
+def miner(worker_id):
+
+    session = requests.Session()
+
+    print(
+        f"🔥 Worker {worker_id} started"
+    )
+
+
+    while True:
+
+        try:
+
+            # Get mining template
+
+            template = session.get(
+                f"{NODE}/api/mining/template",
+                params={
+                    "minerAddress": WALLET
+                },
+                timeout=10
+            ).json()
+
+
+
+            header = template["header"]
+
+            block_target = int(
+                template["target"]
+            )
+
+            share_target = int(
+                template["shareTarget"]
+            )
+
+
+
+            nonce = random.randint(
+                0,
+                2**48
+            )
+
+
+            hashes = 0
+            start = time.time()
+
+
+
+            while True:
+
+
+                h = keccak256(
+                    encode(
+                        header,
+                        nonce
+                    )
+                )
+
+
+                # ----------------------
+                # BLOCK FOUND
+                # ----------------------
+
+                if h <= block_target:
+
+
+                    response = session.post(
+                        f"{NODE}/api/mining/submit",
+
+                        json={
+
+                            "minerAddress": WALLET,
+
+                            "header": header,
+
+                            "nonce": str(nonce),
+
+                            "blockHash":
+                            "0x" +
+                            h.to_bytes(
+                                32,
+                                "big"
+                            ).hex(),
+
+                            "pendingTxHashes":
+                            template[
+                                "pendingTxHashes"
+                            ]
+                        },
+
+                        timeout=10
+                    )
+
+
+                    print(
+                        "\n🚀🚀 BLOCK FOUND 🚀🚀"
+                    )
+
+                    print(
+                        response.text
+                    )
+
+
+                    break
+
+
+
+                # ----------------------
+                # POOL SHARE
+                # ----------------------
+
+                if h <= share_target:
+
+
+                    session.post(
+                        f"{NODE}/api/mining/share",
+
+                        json={
+
+                            "minerAddress": WALLET,
+
+                            "header": header,
+
+                            "nonce": str(nonce)
+
+                        },
+
+                        timeout=2
+                    )
+
+
+                    print(
+                        f"Worker {worker_id} share"
+                    )
+
+
+
+                nonce += 1
+
+                hashes += 1
+
+
+
+                # Report speed
+
+                if hashes % 250000 == 0:
+
+                    elapsed = (
+                        time.time()
+                        -
+                        start
+                    )
+
+                    speed = (
+                        hashes /
+                        elapsed
+                    )
+
+
+                    print(
+                        f"Worker {worker_id}: "
+                        f"{speed:,.0f} H/s"
+                    )
+
+
+                # Refresh template occasionally
+
+                if hashes >= 2000000:
+                    break
+
+
+
+        except Exception as e:
+
+            print(
+                f"Worker {worker_id} error:",
+                e
+            )
+
+            time.sleep(3)
+
+
+
+# ============================
+# START MINER
+# ============================
+
+if __name__ == "__main__":
+
+
+    print("""
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔥 EMBERCHAIN MINER STARTING 🔥
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Algorithm:
+Keccak256 Custom Header PoW
+
+Chain ID:
+7773
+
+Wallet:
+%s
+
+Workers:
+%d
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+""" % (
+        WALLET,
+        WORKERS
+    ))
+
+
+
+    processes = []
+
+
+    for i in range(WORKERS):
+
+        p = Process(
+            target=miner,
+            args=(i,)
+        )
+
+        p.start()
+
+        processes.append(p)
+
+
+
+    for p in processes:
+
+        p.join()

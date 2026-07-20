@@ -1,0 +1,26 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "e1Cv3SOb7lFPtGXynregU"
+uri = "file://artifacts/bitcointalk-post.md"
+type = "text"
+title = "Emberchain BitcoinTalk Post — Altcoin Mining Board"
+
+[[outputs]]
+id = "9tlLgaEUR2wVeA9jK9en-"
+uri = "file://artifacts/wallet/public/og-image.jpg"
+type = "image"
+title = "Emberchain OG / Social Preview Image"
+
+[[outputs]]
+id = "esZVv801JVonkHJWJaPRU"
+uri = "file://attached_assets/emberchain_update2_final.txt"
+type = "text"
+title = "Emberchain Update #2 — Final Post"
+
+[[outputs]]
+id = "Wtx1BF0zCTNkUDEOqPZwu"
+uri = "file://attached_assets/miningscan_listing_request.txt"
+type = "text"
+title = "Mining Scan Listing Request — EMBR"

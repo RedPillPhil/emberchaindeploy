@@ -1,0 +1,1044 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Emberchain node API — a proof-of-work smart-contract blockchain
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: wallet
+    description: Wallet operations
+  - name: chain
+    description: Chain explorer operations
+  - name: transactions
+    description: Transaction submission and lookup
+  - name: contracts
+    description: Smart contract calls
+  - name: mining
+    description: Mining control
+  - name: privacy
+    description: Shielded pool (private transactions)
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /wallets:
+    post:
+      operationId: createWallet
+      tags: [wallet]
+      summary: Create or import a wallet
+      description: Generates a brand-new Emberchain wallet, or imports one from an existing private key.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WalletImport"
+      responses:
+        "201":
+          description: Wallet created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletSecret"
+    get:
+      operationId: listWallets
+      tags: [wallet]
+      summary: List wallets known to this node
+      responses:
+        "200":
+          description: Wallets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Wallet"
+
+  /wallets/{address}:
+    get:
+      operationId: getWallet
+      tags: [wallet]
+      summary: Get wallet balance and nonce
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Wallet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+        "404":
+          description: Not found
+
+  /chain/status:
+    get:
+      operationId: getChainStatus
+      tags: [chain]
+      summary: Get overall chain and mining status
+      responses:
+        "200":
+          description: Chain status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChainStatus"
+
+  /chain/blocks:
+    get:
+      operationId: listBlocks
+      tags: [chain]
+      summary: List most recent blocks
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Blocks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BlockSummary"
+
+  /chain/blocks/{number}:
+    get:
+      operationId: getBlock
+      tags: [chain]
+      summary: Get a single block with its transactions
+      parameters:
+        - name: number
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Block
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlockDetail"
+        "404":
+          description: Not found
+
+  /transactions:
+    post:
+      operationId: createTransaction
+      tags: [transactions]
+      summary: Sign and submit a transaction (transfer, contract deployment, or contract call)
+      description: >
+        Set `to` to null to deploy a contract (in that case `data` is the contract bytecode plus
+        constructor arguments). Set `to` to a contract address with encoded call `data` to invoke it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionInput"
+      responses:
+        "201":
+          description: Transaction accepted into the mempool
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "400":
+          description: Invalid transaction
+    get:
+      operationId: listTransactions
+      tags: [transactions]
+      summary: List recent transactions, optionally filtered by address
+      parameters:
+        - name: address
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+
+  /transactions/{hash}:
+    get:
+      operationId: getTransaction
+      tags: [transactions]
+      summary: Get a transaction and its receipt
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "404":
+          description: Not found
+
+  /contracts/call:
+    post:
+      operationId: callContract
+      tags: [contracts]
+      summary: Read-only contract call (no state change, no gas spent, not mined)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContractCall"
+      responses:
+        "200":
+          description: Call result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContractCallResult"
+        "400":
+          description: Call failed
+
+  /mining/status:
+    get:
+      operationId: getMiningStatus
+      tags: [mining]
+      summary: Get current mining status
+      responses:
+        "200":
+          description: Mining status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MiningStatus"
+
+  /mining/start:
+    post:
+      operationId: startMining
+      tags: [mining]
+      summary: Start mining from a wallet address (block rewards pay out to this address)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MiningRequest"
+      responses:
+        "200":
+          description: Mining started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MiningStatus"
+        "400":
+          description: Invalid miner address
+
+  /mining/stop:
+    post:
+      operationId: stopMining
+      tags: [mining]
+      summary: Stop mining
+      responses:
+        "200":
+          description: Mining stopped
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MiningStatus"
+
+  /privacy/status:
+    get:
+      operationId: getPrivacyStatus
+      tags: [privacy]
+      summary: Pool statistics (total notes, unspent, shielded tx count)
+      responses:
+        "200":
+          description: Privacy pool status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrivacyStatus"
+
+  /privacy/meta/{address}:
+    get:
+      operationId: getStealthMeta
+      tags: [privacy]
+      summary: Get a wallet's public stealth meta-address (spend + view public keys)
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Stealth meta-address
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StealthMeta"
+        "404":
+          description: Wallet has no registered stealth address
+
+  /privacy/balance:
+    post:
+      operationId: getPrivateBalance
+      tags: [privacy]
+      summary: Scan the shielded pool and return the private balance for a wallet
+      description: >
+        Requires the wallet private key (consistent with this node's existing
+        server-side-signing trust model). Returns the total shielded balance
+        and a history of all notes the key owns, decrypted.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrivateKeyInput"
+      responses:
+        "200":
+          description: Private balance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrivateBalance"
+        "400":
+          description: Invalid private key
+
+  /privacy/shield:
+    post:
+      operationId: shieldFunds
+      tags: [privacy]
+      summary: Move EMBR from a public balance into a hidden shielded note
+      description: >
+        The source address and amount are visible at this boundary (by design —
+        same as Zcash t→z). The resulting note is cryptographically hidden.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShieldInput"
+      responses:
+        "201":
+          description: Shield operation record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShieldedTxRecord"
+        "400":
+          description: Insufficient balance or invalid input
+
+  /privacy/send:
+    post:
+      operationId: privateSend
+      tags: [privacy]
+      summary: Send EMBR privately (sender, recipient, and amount all hidden)
+      description: >
+        Spends owned hidden notes via a ring signature + Pedersen-commitment
+        scheme. The resulting ledger record reveals only the fee and opaque
+        note IDs — no sender, no recipient, no amount.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PrivateSendInput"
+      responses:
+        "201":
+          description: Private send record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShieldedTxRecord"
+        "400":
+          description: Insufficient private balance or invalid input
+
+  /privacy/unshield:
+    post:
+      operationId: unshieldFunds
+      tags: [privacy]
+      summary: Move EMBR from the shielded pool back to a public address
+      description: >
+        The destination address and amount are visible at this boundary (by
+        design — same as Zcash z→t). The originating shielded note(s) are not
+        linked to any public address in the on-chain record.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UnshieldInput"
+      responses:
+        "201":
+          description: Unshield operation record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShieldedTxRecord"
+        "400":
+          description: Insufficient private balance or invalid input
+
+  /privacy/transactions:
+    get:
+      operationId: listPrivacyLedger
+      tags: [privacy]
+      summary: Public sanitized ledger of shielded-pool operations
+      description: >
+        Shield and unshield entries expose their public address/amount (the
+        transparent boundary). Private-send entries expose only the fee and
+        opaque note IDs — never the sender, recipient, or amount.
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Shielded transaction records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShieldedTxRecord"
+
+  /exchange/listings:
+    get:
+      operationId: listExchangeListings
+      tags: [exchange]
+      summary: List marketplace listings
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, fulfilled, cancelled]
+        - name: seller
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExchangeListing"
+    post:
+      operationId: createListing
+      tags: [exchange]
+      summary: Create a new EMBR-for-currency listing (locks the EMBR immediately from seller's balance)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateListingInput"
+      responses:
+        "201":
+          description: Listing created and EMBR locked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExchangeListing"
+        "400":
+          description: Invalid input or insufficient EMBR balance
+
+  /exchange/listings/{id}:
+    get:
+      operationId: getExchangeListing
+      tags: [exchange]
+      summary: Get a single exchange listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExchangeListing"
+        "404":
+          description: Not found
+
+  /exchange/listings/{id}/cancel:
+    post:
+      operationId: cancelListing
+      tags: [exchange]
+      summary: Cancel an open listing — unlocks EMBR back to seller
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CancelListingInput"
+      responses:
+        "200":
+          description: Listing cancelled and EMBR returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExchangeListing"
+        "400":
+          description: Not authorized or listing not cancellable
+        "409":
+          description: Listing is being verified by a buyer right now
+
+  /exchange/listings/{id}/buy:
+    post:
+      operationId: buyListing
+      tags: [exchange]
+      summary: >
+        Submit proof of payment. Verifies the transaction on the external
+        blockchain explorer; if valid, releases locked EMBR to the buyer.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BuyListingInput"
+      responses:
+        "200":
+          description: Payment verified — EMBR released to buyer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExchangeListing"
+        "400":
+          description: Payment verification failed (wrong amount, wrong address, insufficient confirmations)
+        "409":
+          description: Listing already taken or currently being verified
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    WalletImport:
+      type: object
+      properties:
+        privateKey:
+          type: ["string", "null"]
+          description: Optional existing private key (0x-prefixed hex) to import instead of generating a new wallet.
+
+    Wallet:
+      type: object
+      required: [address, balance, nonce]
+      properties:
+        address:
+          type: string
+        balance:
+          type: string
+          description: Balance in the smallest unit (emb), as a decimal string.
+        nonce:
+          type: integer
+
+    WalletSecret:
+      allOf:
+        - $ref: "#/components/schemas/Wallet"
+        - type: object
+          required: [privateKey, publicKey]
+          properties:
+            privateKey:
+              type: string
+              description: 0x-prefixed hex private key. Shown once — store it safely.
+            publicKey:
+              type: string
+
+    ChainStatus:
+      type: object
+      required:
+        - chainName
+        - symbol
+        - height
+        - latestBlockHash
+        - difficulty
+        - targetBlockTimeSeconds
+        - pendingTransactionCount
+        - isMining
+        - minerAddress
+        - blockReward
+        - totalSupply
+        - totalTransactions
+      properties:
+        chainName:
+          type: string
+        symbol:
+          type: string
+        height:
+          type: integer
+        latestBlockHash:
+          type: string
+        difficulty:
+          type: string
+        targetBlockTimeSeconds:
+          type: integer
+        pendingTransactionCount:
+          type: integer
+        isMining:
+          type: boolean
+        minerAddress:
+          type: ["string", "null"]
+        blockReward:
+          type: string
+        totalSupply:
+          type: string
+          description: Total EMBR minted so far (wei string).
+        avgBlockTime:
+          type: ["integer", "null"]
+          description: Average block time in seconds over the last 20 blocks. Null if fewer than 3 blocks.
+        totalTransactions:
+          type: integer
+          description: Total confirmed transactions across all blocks.
+
+    BlockSummary:
+      type: object
+      required:
+        - number
+        - hash
+        - parentHash
+        - timestamp
+        - miner
+        - difficulty
+        - transactionCount
+        - nonce
+      properties:
+        number:
+          type: integer
+        hash:
+          type: string
+        parentHash:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        miner:
+          type: string
+        difficulty:
+          type: string
+        transactionCount:
+          type: integer
+        nonce:
+          type: string
+
+    BlockDetail:
+      allOf:
+        - $ref: "#/components/schemas/BlockSummary"
+        - type: object
+          required: [stateRoot, reward, transactions]
+          properties:
+            stateRoot:
+              type: string
+            reward:
+              type: string
+            transactions:
+              type: array
+              items:
+                $ref: "#/components/schemas/Transaction"
+
+    TransactionInput:
+      type: object
+      required: [fromPrivateKey, to, value]
+      properties:
+        fromPrivateKey:
+          type: string
+          description: 0x-prefixed hex private key used to sign this transaction.
+        to:
+          type: ["string", "null"]
+          description: Recipient or contract address. Null to deploy a new contract.
+        value:
+          type: string
+          description: Amount to send in emb (smallest unit), as a decimal string. Use "0" for contract calls.
+        data:
+          type: string
+          description: 0x-prefixed hex call data or contract creation bytecode.
+          default: "0x"
+        gasLimit:
+          type: string
+          default: "3000000"
+
+    Transaction:
+      type: object
+      required:
+        - hash
+        - from
+        - to
+        - value
+        - nonce
+        - gasLimit
+        - status
+        - blockNumber
+        - contractAddress
+        - gasUsed
+        - createdAt
+      properties:
+        hash:
+          type: string
+        from:
+          type: string
+        to:
+          type: ["string", "null"]
+        value:
+          type: string
+        nonce:
+          type: integer
+        gasLimit:
+          type: string
+        status:
+          type: string
+          enum: [pending, success, failed]
+        blockNumber:
+          type: ["integer", "null"]
+        contractAddress:
+          type: ["string", "null"]
+        gasUsed:
+          type: ["string", "null"]
+        data:
+          type: ["string", "null"]
+        error:
+          type: ["string", "null"]
+        returnData:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    ContractCall:
+      type: object
+      required: [to, data]
+      properties:
+        to:
+          type: string
+        data:
+          type: string
+        from:
+          type: ["string", "null"]
+
+    ContractCallResult:
+      type: object
+      required: [success, returnData, gasUsed]
+      properties:
+        success:
+          type: boolean
+        returnData:
+          type: string
+        gasUsed:
+          type: string
+        error:
+          type: ["string", "null"]
+
+    MiningRequest:
+      type: object
+      required: [minerAddress]
+      properties:
+        minerAddress:
+          type: string
+        intensity:
+          type: integer
+          minimum: 1
+          maximum: 5
+          default: 2
+          description: >
+            Mining intensity (1–5). Controls how many hashes the server attempts per event-loop
+            batch. Higher = faster blocks but the API server yields less CPU time to other
+            requests. 1=Eco, 2=Balanced, 3=High, 4=Aggressive, 5=Max.
+
+    MiningStatus:
+      type: object
+      required: [isMining, minerAddress, difficulty, blocksMined, hashRate, blockReward, intensity]
+      properties:
+        isMining:
+          type: boolean
+        minerAddress:
+          type: ["string", "null"]
+        difficulty:
+          type: string
+        blocksMined:
+          type: integer
+        hashRate:
+          type: number
+        blockReward:
+          type: string
+        intensity:
+          type: integer
+          minimum: 1
+          maximum: 5
+
+    PrivacyStatus:
+      type: object
+      required: [totalNotes, unspentNotes, shieldedTxCount]
+      properties:
+        totalNotes:
+          type: integer
+        unspentNotes:
+          type: integer
+        shieldedTxCount:
+          type: integer
+
+    StealthMeta:
+      type: object
+      required: [spendPublicKey, viewPublicKey]
+      properties:
+        spendPublicKey:
+          type: string
+          description: Compressed secp256k1 public key (33-byte hex) for the spend key.
+        viewPublicKey:
+          type: string
+          description: Compressed secp256k1 public key (33-byte hex) for the view key.
+
+    PrivateKeyInput:
+      type: object
+      required: [privateKey]
+      properties:
+        privateKey:
+          type: string
+          description: 0x-prefixed hex private key.
+
+    PrivateBalance:
+      type: object
+      required: [address, balance, notes]
+      properties:
+        address:
+          type: string
+        balance:
+          type: string
+          description: Total unspent private balance in emb (smallest unit), decimal string.
+        notes:
+          type: array
+          items:
+            $ref: "#/components/schemas/PrivateNoteInfo"
+
+    PrivateNoteInfo:
+      type: object
+      required: [id, amount, status, source, createdAt]
+      properties:
+        id:
+          type: string
+        amount:
+          type: string
+        status:
+          type: string
+          enum: [unspent, spent]
+        source:
+          type: string
+          enum: [shield, private-send]
+        createdAt:
+          type: string
+          format: date-time
+
+    ShieldInput:
+      type: object
+      required: [fromPrivateKey, amount]
+      properties:
+        fromPrivateKey:
+          type: string
+          description: 0x-prefixed hex private key of the sender's public account.
+        amount:
+          type: string
+          description: Amount to shield in emb (smallest unit), decimal string.
+        toAddress:
+          type: ["string", "null"]
+          description: Recipient address (defaults to the sender's own address).
+
+    PrivateSendInput:
+      type: object
+      required: [fromPrivateKey, toAddress, amount]
+      properties:
+        fromPrivateKey:
+          type: string
+          description: 0x-prefixed hex private key of the spender.
+        toAddress:
+          type: string
+          description: Recipient's public Emberchain address (must have a registered stealth meta-address).
+        amount:
+          type: string
+          description: Amount to send in emb (smallest unit), decimal string.
+        fee:
+          type: string
+          description: Fee in emb; defaults to 0.01 EMBR if omitted.
+
+    UnshieldInput:
+      type: object
+      required: [fromPrivateKey, toAddress, amount]
+      properties:
+        fromPrivateKey:
+          type: string
+          description: 0x-prefixed hex private key of the shielded-note owner.
+        toAddress:
+          type: string
+          description: Public Emberchain address to credit.
+        amount:
+          type: string
+          description: Amount to unshield in emb (smallest unit), decimal string.
+
+    ShieldedTxRecord:
+      type: object
+      required: [id, type, createdAt, publicAddress, publicAmount, fee, noteIdsCreated, noteIdsSpent]
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [shield, private-send, unshield]
+        createdAt:
+          type: string
+          format: date-time
+        publicAddress:
+          type: ["string", "null"]
+          description: Visible for shield/unshield only. Always null for private-send.
+        publicAmount:
+          type: ["string", "null"]
+          description: Visible for shield/unshield only. Always null for private-send.
+        fee:
+          type: string
+        noteIdsCreated:
+          type: array
+          items:
+            type: string
+        noteIdsSpent:
+          type: array
+          items:
+            type: string
+
+    ExchangeListing:
+      type: object
+      required: [id, sellerAddress, amountEmbr, currency, priceAmount, receiveAddress, status, buyerAddress, paymentTxHash, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+        sellerAddress:
+          type: string
+          description: EMBR address of the seller
+        amountEmbr:
+          type: string
+          description: Amount of EMBR locked for sale (wei string)
+        currency:
+          type: string
+          enum: [ETH, USDT, BTC, SOL]
+        priceAmount:
+          type: string
+          description: Asking price in the currency's natural unit (e.g. "0.05" for 0.05 ETH)
+        receiveAddress:
+          type: string
+          description: Seller's off-chain address to receive the currency payment
+        status:
+          type: string
+          enum: [open, fulfilled, cancelled]
+        buyerAddress:
+          type: ["string", "null"]
+          description: EMBR address of the buyer (set on fulfillment)
+        paymentTxHash:
+          type: ["string", "null"]
+          description: External chain tx hash submitted by the buyer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    CreateListingInput:
+      type: object
+      required: [sellerPrivateKey, amountEmbr, currency, priceAmount, receiveAddress]
+      properties:
+        sellerPrivateKey:
+          type: string
+          description: 0x-prefixed hex private key. Server derives the seller address — never trust the client to supply an address.
+        amountEmbr:
+          type: string
+          description: Amount to lock and sell (wei string)
+        currency:
+          type: string
+          enum: [ETH, USDT, BTC, SOL]
+        priceAmount:
+          type: string
+          description: Asking price in the currency's natural unit (decimal string)
+        receiveAddress:
+          type: string
+          description: Where the seller wants to receive the off-chain payment
+
+    CancelListingInput:
+      type: object
+      required: [sellerPrivateKey]
+      properties:
+        sellerPrivateKey:
+          type: string
+          description: 0x-prefixed hex private key of the original seller. Server derives and verifies the address.
+
+    BuyListingInput:
+      type: object
+      required: [buyerAddress, paymentTxHash]
+      properties:
+        buyerAddress:
+          type: string
+          description: The buyer's EMBR address — EMBR will be credited here on success
+        paymentTxHash:
+          type: string
+          description: Transaction hash of the payment on the external chain
+
+    ListExchangeListingsParams:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [open, fulfilled, cancelled]
+        seller:
+          type: string

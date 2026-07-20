@@ -1,0 +1,357 @@
+[center]
+[size=24pt][b][color=#ff6600]🔥 EMBERCHAIN (EMBR) 🔥[/color][/b][/size]
+
+[size=14pt][b]Developer Update #2[/b][/size]
+
+[size=12pt][color=#888888]Forge Community Launch · Multi-Core Mining · Exchange Enhancements[/color][/size]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[/center]
+
+
+[center]
+[size=14pt][b]🔥 Forge Community Is Live · The Wallet Becomes The Hub 🔥[/b][/size]
+[/center]
+
+
+Hello Bitcointalk,
+
+We're back with a substantial update.
+
+Since our last announcement we've been heads-down building, and today we want to walk through everything that has shipped, as well as share where the project is headed.
+
+The headline of this update is the [b]Forge Community[/b] — a fully integrated social layer built directly into the EMBR wallet experience.
+
+
+[hr]
+
+[center]
+[size=18pt][b][color=#ff6600]▌ WHAT'S NEW[/color][/b][/size]
+[/center]
+
+
+[size=16pt][b]🔥 Forge Community — Live Chat & Forum (FLAGSHIP)[/b][/size]
+
+
+This is the feature we've been most excited about.
+
+Every EMBR wallet holder now has access to a real-time community space, accessible directly from the wallet sidebar — [b]no separate account, no email, no sign-up.[/b]
+
+Connect your wallet, and you're in.
+
+
+[size=14pt][b]💬 Live Chat[/b][/size]
+
+The chat room is live and persistent.
+
+Messages are broadcast instantly over [b]WebSockets[/b] to every connected user.
+
+The channel stays active as long as someone is online — there's no polling delay and no refresh required.
+
+Scroll up and you'll see the last [b]80 messages[/b] replayed when connecting, so you never walk into a cold room.
+
+
+[size=14pt][b]📖 Forum[/b][/size]
+
+Alongside live chat we've launched a threaded forum.
+
+Users can:
+
+[list]
+[*]Create topics
+[*]Discuss mining strategy
+[*]Ask questions
+[*]Share exchange tips
+[*]Participate in community discussions
+[/list]
+
+The voting system uses your wallet address as identity:
+
+[list]
+[*]One upvote or downvote per address per post
+[*]Votes can be toggled or changed at any time
+[*]Scores update live across all connected clients
+[*]Nested comments update in real time
+[/list]
+
+
+[size=14pt][b]🔐 Identity & Privacy System[/b][/size]
+
+Privacy and user control were priorities.
+
+Every participant has full control over how they appear:
+
+
+[b]Nickname[/b]
+
+Set a display name up to 32 characters.
+
+Your nickname appears across:
+
+[list]
+[*]Chat messages
+[*]Forum posts
+[*]Comments
+[/list]
+
+Update it anytime and all connected clients see the change instantly.
+
+
+[b]Anon Fallback[/b]
+
+If you choose not to set a nickname, you appear as:
+
+[color=#888888]Anon####[/color]
+
+The identifier is deterministically generated from your wallet address, meaning the same wallet remains recognizable without revealing identity.
+
+
+[b]Address Shielding[/b]
+
+Hover over any user's name to view their privacy setting:
+
+[list]
+[*]Public users display their wallet address
+[*]Shielded users display [color=#888888]░░ SHIELDED ░░[/color] with an eye-off indicator
+[/list]
+
+You decide what information is visible.
+
+
+All of this is backed by a server-side profile system, allowing settings to persist across devices and sessions.
+
+The system is completely identity optional:
+
+[b]Participate anonymously or become a recognized community member — the choice is yours.[/b]
+
+
+[hr]
+
+
+[size=16pt][b]⛏ Multi-Core Browser Mining[/b][/size]
+
+
+Multi-core browser mining shipped in the last sprint and continues to perform well.
+
+The EMBR wallet automatically launches:
+
+[list]
+[*]One Web Worker per logical CPU core
+[*]Independent nonce ranges per worker
+[*]Parallel mining across available CPU resources
+[/list]
+
+Modern machines receive a significant throughput improvement.
+
+Work templates are fetched centrally and distributed across cores.
+
+The best result from any core triggers share submission.
+
+Stale templates caused by newly discovered blocks are automatically detected, refreshed, and retried.
+
+
+[hr]
+
+
+[size=16pt][b]📊 Exchange Improvements[/b][/size]
+
+
+The marketplace received several quality-of-life upgrades:
+
+
+[b]Market Cap[/b]
+
+Market capitalization is now displayed on the price history panel, calculated from the latest trade price against total circulating supply.
+
+
+[b]Listing Timestamps[/b]
+
+Open listings now display creation timestamps so users can better evaluate market activity.
+
+
+[b]Sorting Controls[/b]
+
+Users can sort listings by:
+
+[list]
+[*]Newest
+[*]Oldest
+[*]Highest Price
+[*]Lowest Price
+[/list]
+
+
+USD equivalents are pulled from CoinGecko with a 60-second cache for accurate pricing without excessive API requests.
+
+
+[hr]
+
+
+[center]
+[size=18pt][b][color=#ff6600]▌ WHAT'S COMING[/color][/b][/size]
+[/center]
+
+
+We're working through a prioritized backlog.
+
+Here are the features closest to release:
+
+
+[size=14pt][b]📜 Trade History[/b][/size]
+
+Buyers and sellers will be able to review their complete transaction history:
+
+[list]
+[*]Every fulfilled listing
+[*]Every payment
+[*]Complete marketplace activity
+[/list]
+
+
+[size=14pt][b]🔒 Wallet PIN Protection[/b][/size]
+
+Optional PIN protection will prevent unauthorized access when a browser session is left open.
+
+Features include:
+
+[list]
+[*]Session timeout
+[*]PIN re-prompt
+[/list]
+
+
+[size=14pt][b]🛡 Buyer Protections[/b][/size]
+
+Improved marketplace edge-case handling.
+
+Especially protecting buyers who have initiated reservations when sellers cancel mid-process.
+
+Reservation states and related data will be handled gracefully.
+
+
+[size=14pt][b]⚔️ PvP Mining — Competitive Block Rounds[/b][/size]
+
+Mining on EMBR isn't passive background work — every block is a live competition.
+
+During each block window, miners race to submit valid proof-of-work shares.
+
+When the block closes, [b]rewards are split proportionally[/b] across all participants based on the shares they contributed in that round.
+
+Work harder, submit more shares, earn more EMBR.
+
+Coming alongside this is a [b]live mining-pool leaderboard[/b] — showing each miner's rank, share count, and estimated cut of the current block in real time.
+
+[list]
+[*]See exactly where you rank against every other active miner
+[*]Watch the leaderboard shift as shares are submitted
+[*]Track your estimated reward update live as the block progresses
+[/list]
+
+If you're running multiple cores you'll feel the difference immediately.
+
+
+[size=14pt][b]🏦 Onchain Savings[/b][/size]
+
+We're building a native savings mechanism for EMBR holders.
+
+Lock EMBR into a savings position directly from your wallet and earn yield over time — entirely onchain, no third party, no custodian.
+
+[list]
+[*]Open and close positions from the wallet UI
+[*]Yield accrues continuously and is visible in real time
+[*]Fully non-custodial — your keys, your savings
+[/list]
+
+More details on the rate structure and lockup mechanics will be shared as the feature approaches release.
+
+
+[size=14pt][b]📉 Progressive Halving[/b][/size]
+
+Bitcoin's halving model is well known, but the sudden cliff creates predictable market stress on halving day.
+
+EMBR takes a different approach.
+
+Instead of reward dropping by 50% overnight, the block reward will [b]decrease gradually and continuously[/b] over a defined supply schedule.
+
+[list]
+[*]No single halving event for traders to front-run
+[*]Smooth, predictable emissions curve over time
+[*]Early miners earn more — later miners earn less — without market shocks
+[/list]
+
+The result is a fairer, more stable issuance model that rewards early participation without punishing late entrants with a sudden cliff.
+
+
+[size=14pt][b]🌊 Elastic Issuance[/b][/size]
+
+On top of progressive halving, EMBR will implement an elastic issuance layer.
+
+Block rewards will adjust dynamically based on real network conditions:
+
+[list]
+[*]High network activity → rewards expand slightly to keep miners incentivized
+[*]Low network activity → rewards contract, controlling supply growth
+[*]Target emission rate maintained automatically without hard forks or manual intervention
+[/list]
+
+The goal is a chain that breathes with its user base — not one that punishes miners during slow periods or floods supply during boom times.
+
+This mechanism, combined with progressive halving, gives EMBR one of the most considered issuance models in the browser-mining space.
+
+
+[hr]
+
+
+[center]
+[size=18pt][b][color=#ff6600]▌ CLOSING THOUGHTS[/color][/b][/size]
+[/center]
+
+
+Emberchain is being built piece by piece, without shortcuts.
+
+The Forge Community ships today because we believe:
+
+[color=#ff6600][b]"A coin without community is just a number."[/b][/color]
+
+
+The EMBR wallet is becoming the place where holders communicate, coordinate, and build together.
+
+Not a third-party Discord server.
+
+Not a temporary community.
+
+A native ecosystem built directly into the wallet experience.
+
+
+If you're mining or holding EMBR, we want to hear from you.
+
+Jump into the Forge Community chat directly from your wallet.
+
+No invite links.
+
+No bot-gated entrance.
+
+Just open your wallet and join the conversation.
+
+
+[b]More updates soon.[/b]
+
+
+[color=#888888]
+— The Emberchain Team
+[/color]
+
+
+[center]
+[size=12pt]
+Wallet & Explorer: [your deployment URL]
+
+Source: Replit Workspace
+
+Ticker: [b]EMBR[/b]
+
+Block Reward: [b]5 EMBR[/b]
+
+Consensus: [b]PoW Browser Mining[/b]
+[/size]
+[/center]

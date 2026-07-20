@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Emberchain Wallet"
+version = "1.0.0"
+id = "artifacts/wallet"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24583
+
+[services.development]
+run = "pnpm --filter @workspace/wallet run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/wallet", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/wallet/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24583"
+BASE_PATH = "/"

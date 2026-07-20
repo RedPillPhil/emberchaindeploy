@@ -1,0 +1,130 @@
+# EMBRmon – Mining Battle Game Concept
+
+EMBRmon is an optional NFT battle game built on Emberchain. It is completely separate from actual blockchain consensus—nothing in the game affects real mining performance or network security.
+
+## NFT Minting
+
+Players mint a unique EMBRmon NFT, each generated with its own creature design, elemental type (Fire, Electric, Ice, Nature, Shadow, etc.), stats, passive abilities, and a set of special attacks.
+
+Minting is designed to reward early adopters while creating a long-term sink for the native token.
+
+Example mint schedule:
+
+* First 25 NFTs: Free
+* Next 50 NFTs: 500 EMBR
+* Next 75 NFTs: 1,000 EMBR
+* Next 100 NFTs: 2,500 EMBR
+
+(The exact pricing model is subject to change.)
+
+Mint fees can initially be sent to a designated protocol wallet while the game's economy is being developed.
+
+---
+
+## Battles
+
+Players challenge each other to turn-based battles.
+
+Victory is determined by a combination of:
+
+* Mining efficiency
+* Strategy
+* Luck
+
+Mining efficiency provides each player with a starting **Battle Efficiency** score that functions similarly to HP in Pokémon.
+
+Example:
+
+Player A begins with:
+
+Battle Efficiency: **175**
+
+Player B begins with:
+
+Battle Efficiency: **162**
+
+Throughout the match, EMBRmon attacks reduce the opponent's Battle Efficiency.
+
+Example:
+
+Fire Blast:
+-28
+
+Lightning Strike:
+-16
+
+Critical Hit:
+-40
+
+Random cards, status effects, passive abilities, and elemental advantages all influence combat.
+
+---
+
+## Live Mining Influence
+
+A player's actual mining efficiency continues to influence the battle while it is taking place.
+
+If their mining performance improves during the match, Battle Efficiency may slowly regenerate.
+
+However, regeneration is intentionally limited.
+
+Example:
+
+Initial Battle Efficiency:
+175
+
+Opponent attacks:
+175 → 90
+
+Mining performance improves.
+
+Battle Efficiency might recover:
+
+90 → 97 → 104 → 112
+
+…but it can **never regenerate back to the original maximum through mining performance alone**.
+
+Only certain healing abilities, cards, or game mechanics may restore HP beyond the regeneration cap.
+
+This preserves the importance of combat while rewarding players who maintain efficient mining.
+
+---
+
+## Gameplay
+
+Battles should feel like a mix of:
+
+* Pokémon
+* Trading card games
+* Turn-based RPG combat
+* Real mining performance
+
+Each turn may allow players to:
+
+* Use one of four creature abilities
+* Play a randomly drawn battle card
+* Activate an item
+* Defend
+* Heal
+* Apply buffs or debuffs
+* Trigger elemental combos
+
+Luck plays a role through card draws, critical hits, status effects, and probability-based abilities, while strategy comes from move selection, timing, and resource management.
+
+---
+
+## Long-Term Vision
+
+The goal is to create a game where mining becomes more engaging without affecting blockchain security.
+
+Real mining determines part of your creature's strength, while gameplay determines the winner.
+
+A player with a modest mining setup can still defeat a stronger miner through smart play, favorable card draws, elemental advantages, and good decision-making.
+
+The ideal balance is approximately:
+
+* 40% strategy
+* 30% mining efficiency
+* 30% luck
+
+This creates a competitive game that rewards efficient miners while remaining fun and accessible for players with a wide range of hardware.
