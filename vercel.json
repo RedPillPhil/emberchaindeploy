@@ -1,6 +1,6 @@
 {
   "buildCommand": "pnpm install && pnpm --filter @workspace/wallet build",
-  "outputDirectory": "artifacts/wallet/dist/public",
+  "outputDirectory": "artifacts/wallet/dist",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": null,
   "rewrites": [
