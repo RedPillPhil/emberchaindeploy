@@ -1,5 +1,4 @@
 {
-  "buildCommand": "pnpm install && pnpm build",
-  "outputDirectory": "dist",
-  "rootDirectory": "artifacts/wallet"
+  "buildCommand": "cd artifacts/wallet && pnpm install && pnpm build",
+  "outputDirectory": "artifacts/wallet/dist"
 }
