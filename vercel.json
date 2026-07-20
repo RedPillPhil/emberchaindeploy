@@ -1,4 +1,11 @@
 {
   "buildCommand": "pnpm install && pnpm --filter @workspace/wallet build",
-  "outputDirectory": "artifacts/wallet/dist"
+  "outputDirectory": "artifacts/wallet/dist",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
