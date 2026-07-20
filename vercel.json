@@ -1,4 +1,4 @@
 {
-  "buildCommand": "cd artifacts/wallet && pnpm install && pnpm build",
+  "buildCommand": "pnpm install && pnpm --filter @workspace/wallet build",
   "outputDirectory": "artifacts/wallet/dist"
 }
